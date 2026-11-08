@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101010">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Metronomi">
+  <meta name="description" content="A simple offline metronome for movement, training, and steady pacing.">
+  <title>Metronomi</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./assets/icon-180.png">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./config.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Metronomi <img src="./assets/icon.svg" width="28" height="28" alt=""></h1>
+      <span id="offline-status" role="status">Saving offline…</span>
+    </header>
+    <section class="metronome" aria-label="Metronome controls">
+      <div id="countdown" class="countdown" role="timer" aria-label="Time until next beep">.00s</div>
+      <div class="progress" aria-hidden="true"><div id="progress-fill" class="progress-fill"></div></div>
+      <fieldset>
+        <legend class="visually-hidden">Beep every</legend>
+        <div class="controls">
+          <div id="interval-options" class="options"></div>
+          <button type="button" id="stop" class="stop" disabled>Stop</button>
+        </div>
+      </fieldset>
+      <p id="playback-status" role="status"></p>
+      <audio id="audio" loop preload="auto" playsinline></audio>
+    </section>
+    <button id="install" class="secondary" hidden>Install</button>
+  </main>
+</body>
+</html>
