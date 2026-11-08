@@ -1,6 +1,6 @@
 /* Bump the version whenever any cached file changes before publishing. */
 'use strict';
-const CACHE = 'metronomi-v17';
+const CACHE = 'metronomi-v18';
 const FILES = [
   './', './index.html', './styles.css', './config.js', './app.js',
   './manifest.webmanifest', './assets/icon.svg', './assets/icon-180.png',
