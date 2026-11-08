@@ -4,6 +4,29 @@ const config = window.METRONOMI_CONFIG;
 const intervals = config.intervals.filter(value => [1, 5, 15].includes(value));
 if (!intervals.length) intervals.push(1);
 const audio = document.querySelector('#audio');
+// Keep complete recordings in memory even on plain HTTP during LAN development.
+// Continue using one media element for the tested iOS background playback path.
+const audioSources = new Map();
+const audioDownloads = new Map();
+function preloadAudio(value) {
+  if (audioSources.has(value) || audioDownloads.has(value)) return;
+  const download = (async () => {
+    try {
+      const response = await fetch(`./assets/tick-${value}s.wav`);
+      if (!response.ok) throw new Error(`Audio download failed: ${response.status}`);
+      const blob = await response.blob();
+      audioSources.set(value, URL.createObjectURL(blob));
+      // Do not replace a source here: a tap may already have started playback.
+      // Object URLs live for this page's lifetime and are reclaimed on unload.
+    } catch {
+      // The normal media URL remains usable; retry preloading on the next tap.
+    } finally {
+      audioDownloads.delete(value);
+    }
+  })();
+  audioDownloads.set(value, download);
+}
+intervals.forEach(preloadAudio);
 const stopButton = document.querySelector('#stop');
 const intervalButtons = [];
 const status = document.querySelector('#playback-status');
@@ -67,7 +90,10 @@ function selectInterval(value) {
   audio.pause();
   interval = value;
   playbackError = '';
-  audio.src = `./assets/tick-${interval}s.wav`;
+  const source = audioSources.get(interval) || `./assets/tick-${interval}s.wav`;
+  if (audio.getAttribute('src') !== source) audio.src = source;
+  else audio.currentTime = 0; // Restart without reloading an already selected file.
+  preloadAudio(interval);
   try { localStorage.setItem(storageKey, String(interval)); storageError = ''; }
   catch { storageError = 'Could not save interval.'; }
   updateMetadata();

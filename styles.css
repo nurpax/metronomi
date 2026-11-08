@@ -23,7 +23,8 @@ main {
 
 header {
   position: absolute;
-  top: max(24px, env(safe-area-inset-top));
+  /* Keep the title below the iOS top blur at the initial scroll position. */
+  top: calc(max(24px, env(safe-area-inset-top)) + 16px);
   left: 20px;
   right: 20px;
   display: flex;
